@@ -1,6 +1,7 @@
 {
   "additionalSandboxProfile": "",
   "allowLocalNetworking": false,
+  "networked": false,
   "allowSubstitutes": true,
   "exportReferencesGraph": {},
   "impureEnvVars": [],

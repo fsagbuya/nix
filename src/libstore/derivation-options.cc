@@ -374,6 +374,7 @@ DerivationOptions<SingleDerivedPath> derivationOptionsFromStructuredAttrs(
         .impureHostDeps = getStringSetAttr(env, parsed, "__impureHostDeps").value_or(defaults.impureHostDeps),
         .impureEnvVars = getStringSetAttr(env, parsed, "impureEnvVars").value_or(defaults.impureEnvVars),
         .allowLocalNetworking = getBoolAttr(env, parsed, "__darwinAllowLocalNetworking", defaults.allowLocalNetworking),
+        .networked = getBoolAttr(env, parsed, "__networked", defaults.networked),
         .requiredSystemFeatures =
             getStringSetAttr(env, parsed, "requiredSystemFeatures").value_or(defaults.requiredSystemFeatures),
         .preferLocalBuild = getBoolAttr(env, parsed, "preferLocalBuild", defaults.preferLocalBuild),
@@ -612,7 +613,7 @@ DerivationOptions<SingleDerivedPath> adl_serializer<DerivationOptions<SingleDeri
         .impureHostDeps = getStringSet(valueAt(json, "impureHostDeps")),
         .impureEnvVars = getStringSet(valueAt(json, "impureEnvVars")),
         .allowLocalNetworking = getBoolean(valueAt(json, "allowLocalNetworking")),
-
+        .networked = getBoolean(valueAt(json, "networked")),
         .requiredSystemFeatures = getStringSet(valueAt(json, "requiredSystemFeatures")),
         .preferLocalBuild = getBoolean(valueAt(json, "preferLocalBuild")),
         .allowSubstitutes = getBoolean(valueAt(json, "allowSubstitutes")),
@@ -646,6 +647,7 @@ void adl_serializer<DerivationOptions<SingleDerivedPath>>::to_json(
     json["impureHostDeps"] = o.impureHostDeps;
     json["impureEnvVars"] = o.impureEnvVars;
     json["allowLocalNetworking"] = o.allowLocalNetworking;
+    json["networked"] = o.networked;
 
     json["requiredSystemFeatures"] = o.requiredSystemFeatures;
     json["preferLocalBuild"] = o.preferLocalBuild;

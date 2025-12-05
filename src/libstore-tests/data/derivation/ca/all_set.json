@@ -1,6 +1,7 @@
 {
   "additionalSandboxProfile": "sandcastle",
   "allowLocalNetworking": true,
+  "networked": false,
   "allowSubstitutes": false,
   "exportReferencesGraph": {
     "refs1": [

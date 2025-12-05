@@ -1988,7 +1988,7 @@ std::unique_ptr<DerivationBuilder> makeDerivationBuilder(
             useSandbox = false;
         else if (settings.sandboxMode == smRelaxed)
             // FIXME: cache derivationType
-            useSandbox = params.drv.type().isSandboxed() && !params.drvOptions.noChroot;
+            useSandbox = !params.drvOptions.networked && params.drv.type().isSandboxed() && !params.drvOptions.noChroot;
     }
 
     if (store.storeDir != store.config->realStoreDir.get()) {
