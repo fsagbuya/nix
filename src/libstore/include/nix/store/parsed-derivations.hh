@@ -18,8 +18,6 @@ class ParsedDerivation
 
     std::optional<std::string> getStringAttr(const std::string & name) const;
 
-    bool getBoolAttr(const std::string & name, bool def = false) const;
-
     std::optional<Strings> getStringsAttr(const std::string & name) const;
 
     std::optional<StringSet> getStringSetAttr(const std::string & name) const;
@@ -44,6 +42,8 @@ public:
     }
 
     std::optional<nlohmann::json> prepareStructuredAttrs(Store & store, const StorePathSet & inputPaths);
+
+    bool getBoolAttr(const std::string & name, bool def = false) const;
 };
 
 std::string writeStructuredAttrsShell(const nlohmann::json & json);

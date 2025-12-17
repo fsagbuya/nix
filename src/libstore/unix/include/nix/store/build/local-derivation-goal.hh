@@ -88,6 +88,8 @@ struct LocalDerivationGoal : public DerivationGoal
      */
     Path chrootRootDir;
 
+    bool networked;
+
     /**
      * RAII object to delete the chroot directory.
      */

@@ -203,6 +203,8 @@ Goal::Co LocalDerivationGoal::tryLocalBuild()
 
     assert(derivationType);
 
+    networked = parsedDrv->getBoolAttr("__networked");
+
     /* Are we doing a chroot build? */
     {
         if (settings.sandboxMode == smEnabled) {
@@ -222,7 +224,7 @@ Goal::Co LocalDerivationGoal::tryLocalBuild()
         } else if (settings.sandboxMode == smDisabled)
             useChroot = false;
         else if (settings.sandboxMode == smRelaxed)
-            useChroot = derivationType->isSandboxed() && !drvOptions->noChroot;
+            useChroot = !networked && derivationType->isSandboxed() && !drvOptions->noChroot;
     }
 
     auto & localStore = getLocalStore();
@@ -797,7 +799,7 @@ void LocalDerivationGoal::startBuilder()
                 sandboxGid()));
 
         /* Create /etc/hosts with localhost entry. */
-        if (derivationType->isSandboxed())
+        if (!networked && derivationType->isSandboxed())
             writeFile(chrootRootDir + "/etc/hosts", "127.0.0.1 localhost\n::1 localhost\n");
 
         /* Make the closure of the inputs available in the chroot,
@@ -995,7 +997,7 @@ void LocalDerivationGoal::startBuilder()
            us.
         */
 
-        if (derivationType->isSandboxed())
+        if (!networked && derivationType->isSandboxed())
             privateNetwork = true;
 
         userNamespaceSync.create();
@@ -1241,7 +1243,7 @@ void LocalDerivationGoal::initEnv()
        to the builder is generally impure, but the output of
        fixed-output derivations is by definition pure (since we
        already know the cryptographic hash of the output). */
-    if (!derivationType->isSandboxed()) {
+    if (networked || !derivationType->isSandboxed()) {
         auto & impureEnv = settings.impureEnv.get();
         if (!impureEnv.empty())
             experimentalFeatureSettings.require(Xp::ConfigurableImpureEnv);
@@ -1967,7 +1969,7 @@ void LocalDerivationGoal::runChild()
             /* Fixed-output derivations typically need to access the
                network, so give them access to /etc/resolv.conf and so
                on. */
-            if (!derivationType->isSandboxed()) {
+            if (networked || !derivationType->isSandboxed()) {
                 // Only use nss functions to resolve hosts and
                 // services. Don’t use it for anything else that may
                 // be configured for this system. This limits the
@@ -2202,7 +2204,7 @@ void LocalDerivationGoal::runChild()
 #  include "sandbox-defaults.sb"
                 ;
 
-            if (!derivationType->isSandboxed())
+            if (networked || !derivationType->isSandboxed())
                 sandboxProfile +=
 #  include "sandbox-network.sb"
                     ;
