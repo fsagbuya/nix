@@ -337,7 +337,7 @@ struct ChrootLinuxDerivationBuilder : ChrootDerivationBuilder, LinuxDerivationBu
 
                 ProcessOptions options;
                 options.cloneFlags = CLONE_NEWPID | CLONE_NEWNS | CLONE_NEWIPC | CLONE_NEWUTS | CLONE_PARENT | SIGCHLD;
-                if (derivationType.isSandboxed())
+                if (derivationType.isSandboxed() && !drvOptions.networked)
                     options.cloneFlags |= CLONE_NEWNET;
                 if (usingUserNamespace)
                     options.cloneFlags |= CLONE_NEWUSER;
@@ -431,7 +431,7 @@ struct ChrootLinuxDerivationBuilder : ChrootDerivationBuilder, LinuxDerivationBu
 
         userNamespaceSync.readSide = -1;
 
-        if (derivationType.isSandboxed()) {
+        if (derivationType.isSandboxed() && !drvOptions.networked) {
 
             /* Initialise the loopback interface. */
             AutoCloseFD fd(socket(PF_INET, SOCK_DGRAM, IPPROTO_IP));
@@ -508,7 +508,7 @@ struct ChrootLinuxDerivationBuilder : ChrootDerivationBuilder, LinuxDerivationBu
         /* Fixed-output derivations typically need to access the
            network, so give them access to /etc/resolv.conf and so
            on. */
-        if (!derivationType.isSandboxed()) {
+        if (!derivationType.isSandboxed() || drvOptions.networked) {
             // Only use nss functions to resolve hosts and
             // services. Don’t use it for anything else that may
             // be configured for this system. This limits the

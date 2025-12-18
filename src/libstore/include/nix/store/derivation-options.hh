@@ -168,6 +168,8 @@ struct DerivationOptions
      */
     bool allowLocalNetworking = false;
 
+    bool networked = false;
+
     /**
      * env: requiredSystemFeatures
      */

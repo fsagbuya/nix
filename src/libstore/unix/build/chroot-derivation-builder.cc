@@ -114,7 +114,7 @@ struct ChrootDerivationBuilder : virtual DerivationBuilderImpl
                 sandboxGid()));
 
         /* Create /etc/hosts with localhost entry. */
-        if (derivationType.isSandboxed())
+        if (derivationType.isSandboxed() && !drvOptions.networked)
             writeFile(chrootRootDir + "/etc/hosts", "127.0.0.1 localhost\n::1 localhost\n");
 
         /* Make the closure of the inputs available in the chroot,
